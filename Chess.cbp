@@ -32,7 +32,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="chessboard.hpp" />
+		<Unit filename="gamestate.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="pawn.hpp" />
+		<Unit filename="piece.hpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

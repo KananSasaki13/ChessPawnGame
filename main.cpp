@@ -2,8 +2,11 @@
 #include <string>
 #include "gamestate.hpp"
 
-using namespace std;
+/*
+    This class is used to construct the gamestate object and run the game.
+*/
 
+using namespace std;
 
 int main()
 {

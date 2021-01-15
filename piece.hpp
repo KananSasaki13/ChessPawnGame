@@ -24,7 +24,6 @@ public:
     char getName();
     bool getIsEmpty();
     bool getIsFirstMove();
-    Position getPosition();
     virtual bool isAttack(char color, Position currentPos, Position newPos);
     virtual bool validateMove(char color, Position currentPos, Position newPos);
 
@@ -42,15 +41,16 @@ private:
     char name = 'X';
     bool isEmpty = true;
     bool isFirstMove = true;
-    Position currentPosition;
 
 };
 
+//Virtual function that should be overwritten by derived classes (ie. pawn)
 bool Piece::isAttack(char color, Position currentPos, Position newPos)
 {
     return false;
 }
 
+//Virtual function that should be overwritten by derived classes (ie. pawn)
 bool Piece::validateMove(char color, Position currentPos, Position newPos)
 {
     return false;
@@ -68,7 +68,6 @@ void Piece::setName(char c)
 
 void Piece::setPiece(Position p)
 {
-    currentPosition = p;
     isEmpty = false;
 }
 
@@ -100,9 +99,4 @@ bool Piece::getIsEmpty()
 bool Piece::getIsFirstMove()
 {
     return isFirstMove;
-}
-
-pair<int, int> Piece::getPosition()
-{
-    return currentPosition;
 }

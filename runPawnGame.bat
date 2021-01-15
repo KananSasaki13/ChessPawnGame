@@ -1,0 +1,2 @@
+pawnGame.exe
+pause

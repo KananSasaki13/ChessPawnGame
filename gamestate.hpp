@@ -1,5 +1,10 @@
 #include "chessboard.hpp"
 
+/*
+    This class contains the logic for actually running the game through the console.
+    It has methods for prompting for pieces, running the game and displaying the ui.
+*/
+
 using namespace std;
 
 class GameState {
@@ -9,11 +14,11 @@ public:
     typedef pair<int, int> Position;
 
     //Queries
-    char getTurn();
     bool checkForVictory();
     bool checkForDraw();
 
     //Commands
+    void printWelcomeMessage();
     void switchTurn();
     void takeTurn();
     void runGame();
@@ -55,11 +60,6 @@ int GameState::getRankFromLetter(char c)
     }
 }
 
-char GameState::getTurn()
-{
-    return currentPlayer;
-}
-
 bool GameState::checkForVictory()
 {
     //Victory Conditions for Pawn game
@@ -89,15 +89,15 @@ bool GameState::checkForDraw()
 bool GameState::validateResponse(string response)
 {
     if(response.length() != 2)
-        throw "Please provide correct number of characters";
+        throw "\nPlease provide correct number of characters\n";
     else
     {
         if(!isalpha(response[0]) || !isdigit(response[1]))
-            throw "Please provide correct col-rank pair format (ie. f3 or h1)!";
+            throw "\nPlease provide correct col-rank pair format (ie. f3 or h1)!\n";
         else
         {
             if(getRankFromLetter(response[0]) < 0 || rows - (response[1] - '0') < 0 || rows - (response[1] - '0') > 7)
-                throw "Please provide correct col-rank pair within the bounds of the board!";
+                throw "\nPlease provide correct col-rank pair within the bounds of the board!\n";
         }
     }
     return true;
@@ -118,6 +118,16 @@ pair<int, int> GameState::promptForPiece()
             col = square[0];
             row = rows - (square[1] - '0');
             file = getRankFromLetter(col);
+            if(board.pieceIsColor(make_pair(row, file), 'N'))
+            {
+                cout << "\nThat square is empty. Please try again.\n" << endl;
+                return promptForPiece();
+            }
+            if(!board.pieceIsColor(make_pair(row, file), currentPlayer))
+            {
+                cout << "\nPlease select a piece of your own color.\n" << endl;
+                return promptForPiece();
+            }
         }
     }
     catch (const char* msg)
@@ -131,7 +141,6 @@ pair<int, int> GameState::promptForPiece()
         return make_pair(row, file);
     }
 
-    cout << "That square is empty. Please try again." << endl;
     return promptForPiece();
 }
 
@@ -163,16 +172,31 @@ pair<int, int> GameState::promptForMove()
 }
 
 //Commands
+void GameState::printWelcomeMessage()
+{
+    cout << "Welcome to the Chess Pawn Game!" << endl << endl;
+
+    //Rules Text
+    cout << "Remember pawns move one square forward (never backward) ";
+    cout << "except on their first move when they have a choice of moving ";
+    cout << "either one or two squares. They capture by moving one square forward diagonally." << endl << endl;
+
+    //Winning the Game Text
+
+    cout << "You win the game:" << endl;
+    cout << "a) if you are the first to capture all your opponent's pawns; or" << endl;
+    cout << "b) if you are the first to reach the last rank (i.e. your opponent's first rank) with one of your pawns; or" << endl;
+    cout << "c) if it is your opponent's turn to move but all her pawns are blocked and do not have any moves, while you yourself can make at least one move." << endl;
+
+    cout << endl;
+}
+
 void GameState::switchTurn()
 {
     if(currentPlayer == 'W')
-    {
         currentPlayer = 'B';
-    }
     else
-    {
         currentPlayer = 'W';
-    }
 }
 
 void GameState::takeTurn()
@@ -182,8 +206,7 @@ void GameState::takeTurn()
     Position selectedPosition = promptForMove();
     while(!board.isValidMove(currentPlayer, selectedPiece, selectedPosition))
     {
-        cout << "This is not a valid move. Please select again." << endl;
-        selectedPiece = promptForPiece();
+        cout << "\nThis is not a valid move. Please select again.\n" << endl;
         selectedPosition = promptForMove();
     }
     board.makeMove(currentPlayer, selectedPiece, selectedPosition);
@@ -191,7 +214,7 @@ void GameState::takeTurn()
 
 void GameState::runGame()
 {
-    cout << "Welcome to the Chess Pawn Game! Be the first to reach the last rank, or capture all of your opponent's pawns." << endl;
+    printWelcomeMessage();
 
     while(true)
     {
@@ -204,7 +227,7 @@ void GameState::runGame()
         if(checkForDraw())
         {
             cout << board << endl;
-            cout << "The game is a draw!" << endl;
+            cout << "\nThe game is a draw!" << endl;
             break;
         }
         if(checkForVictory())
@@ -212,9 +235,9 @@ void GameState::runGame()
             cout << board << endl;
             if(currentPlayer == 'W')
             {
-                cout << "White is the winner!" << endl;
+                cout << "\nWhite is the winner!" << endl;
             } else {
-                cout << "Black is the winner!" << endl;
+                cout << "\nBlack is the winner!" << endl;
             }
             break;
         }

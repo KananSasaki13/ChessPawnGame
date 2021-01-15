@@ -5,8 +5,14 @@
 #include "pawn.hpp"
 #include <typeinfo>
 
+/*
+    This class maintains the information of the chessboard.
+    Includes positions of pieces and the logic for verifying moves and checking for victory/draw conditions.
+*/
+
 using namespace std;
 
+//Global variables for the number of rows and columns. Typically for a normal chessboard it is an 8x8 board.
 const int rows = 8;
 const int cols = 8;
 
@@ -25,6 +31,7 @@ public:
 
     //Queries
     bool spaceHasPiece(Position p);
+    bool pieceIsColor(Position p, char color);
     bool oppHasNoPawns(char color);
     bool hasPawnOnLastRank(char color);
     bool oppHasNoAvailableMove(char color);
@@ -42,12 +49,15 @@ ChessBoard::ChessBoard ()
         vector<unique_ptr<Piece>> temp;
         for(int col = 0; col < 8; col++)
         {
+            //Comment these lines out and remove the comments below to test draw/win scenario.
             if(row == 1)
                 temp.emplace_back(new Pawn('B', make_pair(row, col)));
             else if(row == 6)
                 temp.emplace_back(new Pawn('W', make_pair(row, col)));
             else
                 temp.emplace_back(new Piece());
+
+            //This can be used to easily test a draw or win scenario.
 //            if(row == 3 && col % 2 == 0)
 //                temp.emplace_back(new Pawn('B', make_pair(row, col)));
 //            else if(row == 4 && col % 2 == 0)
@@ -111,11 +121,13 @@ ostream& operator<<(ostream& os, ChessBoard& board)
 
 void ChessBoard::makeMove(char color, Position selectedPiece, Position selectedPosition)
 {
+    //If the move is an attack, need to swap the position with an empty Piece
     if(boardState[selectedPosition.first][selectedPosition.second]->isAttack(color, selectedPiece, selectedPosition))
     {
         boardState[selectedPosition.first][selectedPosition.second]->setIsEmpty();
         swap(boardState[selectedPosition.first][selectedPosition.second], boardState[selectedPiece.first][selectedPiece.second]);
     }
+    //If the move is a regular move, simply swap the existing empty Piece with the used piece
     else
         swap(boardState[selectedPosition.first][selectedPosition.second], boardState[selectedPiece.first][selectedPiece.second]);
     boardState[selectedPosition.first][selectedPosition.second]->setIsFirstMove();
@@ -126,12 +138,18 @@ bool ChessBoard::spaceHasPiece(Position p)
     return !boardState[p.first][p.second]->getIsEmpty();
 }
 
+bool ChessBoard::pieceIsColor(Position p, char color)
+{
+    return boardState[p.first][p.second]->getColor() == color;
+}
+
 bool ChessBoard::oppHasNoPawns(char color)
 {
     for(int i = 0; i < rows; i++)
     {
         for(int j = 0; j < cols; j++)
         {
+            //Check if a space contains a piece of the opposing color
             if(!(boardState[i][j]->getColor() == 'N' || boardState[i][j]->getColor() == color))
                 return false;
         }
@@ -160,6 +178,7 @@ bool ChessBoard::hasPawnOnLastRank(char color)
     return false;
 }
 
+//Check if the opponent has an available move. This is necessary to determine both the victory condition and the draw condition.
 bool ChessBoard::oppHasNoAvailableMove(char color)
 {
     if(color == 'W')
@@ -194,6 +213,7 @@ bool ChessBoard::oppHasNoAvailableMove(char color)
     return true;
 }
 
+//Checks to make sure that the provided coordinates fit within the grid.
 bool ChessBoard::isValidPosition(Position p)
 {
     if(p.first < rows && p.first >= 0 && p.second < cols && p.second >= 0)
@@ -207,7 +227,7 @@ bool ChessBoard::isValidMove(char color, Position piece, Position pos)
     if(isValidPosition(piece) && isValidPosition(pos))
     {
         //If the piece that was selected is capable of moving to the desired position
-        if(boardState[piece.first][piece.second]->getColor() == color && boardState[piece.first][piece.second]->validateMove(color, piece, pos))
+        if(boardState[piece.first][piece.second]->validateMove(color, piece, pos))
         {
             //If the space has a piece
             if(spaceHasPiece(pos))

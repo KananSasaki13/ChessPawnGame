@@ -1,19 +1,19 @@
 # depslib dependency file v1.0
-1610480343 source:d:\c++\chess\main.cpp
+1610749846 source:d:\c++\chess\main.cpp
 	<iostream>
 	<string>
 	"gamestate.hpp"
 
-1610685598 d:\c++\chess\pawn.hpp
+1610752583 d:\c++\chess\pawn.hpp
 	"piece.hpp"
 	<cmath>
 	<iostream>
 
-1610669205 d:\c++\chess\piece.hpp
+1610750017 d:\c++\chess\piece.hpp
 	<iostream>
 	<string>
 
-1610691592 d:\c++\chess\chessboard.hpp
+1610752524 d:\c++\chess\chessboard.hpp
 	<iostream>
 	<string>
 	<vector>
@@ -21,6 +21,6 @@
 	"pawn.hpp"
 	<typeinfo>
 
-1610691565 d:\c++\chess\gamestate.hpp
+1610753447 d:\c++\chess\gamestate.hpp
 	"chessboard.hpp"
 
