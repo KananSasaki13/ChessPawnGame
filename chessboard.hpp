@@ -13,8 +13,7 @@ const int cols = 8;
 class ChessBoard {
 
 public:
-    //Destructor/Constructor
-    ~ChessBoard();
+    //Constructor
     ChessBoard();
 
     //Typedefs
@@ -22,33 +21,22 @@ public:
 
     //Commands
     friend ostream& operator<<(ostream& os, const ChessBoard& board);
-//    void setNewBoard();
     void makeMove(char color, Position selectedPiece, Position selectedPosition);
 
     //Queries
-//    unique_ptr<Piece> getPieceAtPosition(Position p);
     bool spaceHasPiece(Position p);
     bool oppHasNoPawns(char color);
     bool hasPawnOnLastRank(char color);
     bool oppHasNoAvailableMove(char color);
+    bool isValidPosition(Position p);
     bool isValidMove(char color, Position piece, Position pos);
     vector< vector< unique_ptr<Piece> > > boardState;
 
-private:
-
-
 };
-
-//Destructor
-ChessBoard::~ChessBoard()
-{
-    cout << "Deconstructing the board" << endl;
-}
 
 //Constructor
 ChessBoard::ChessBoard ()
 {
-    cout << "Constructing the board" << endl;
     for(int row = 0; row < 8; row++)
     {
         vector<unique_ptr<Piece>> temp;
@@ -90,7 +78,6 @@ ostream& operator<<(ostream& os, ChessBoard& board)
             else {
                 if(board.spaceHasPiece(make_pair(i/2,j/2))){
                     printf(" %c%c ", board.boardState[i/2][j/2]->getColor(), board.boardState[i/2][j/2]->getName());
-//                    printf(" %d%d ", i/2,j/2);
                 }
                 else
                     cout << "    ";
@@ -111,21 +98,6 @@ ostream& operator<<(ostream& os, ChessBoard& board)
 
     return os;
 }
-
-//Sets up a new board. Currently will set the second and seventh ranks with pawns. Can be modified later to setup other pieces.
-//void ChessBoard::setNewBoard()
-//{
-//    cout << "setNewBoard" << endl;
-//    for(int row = 0; row < 8; row++)
-//    {
-//        for(int col = 0; col < 8; col++)
-//        {
-//            boardState[col].emplace_back(new Pawn('B', make_pair(col, 1)));
-//        }
-////        boardState[1][col] = Pawn('B', make_pair(col, 1));
-////        boardState[6][col] = Pawn('W', make_pair(col, 6));
-//    }
-//}
 
 void ChessBoard::makeMove(char color, Position selectedPiece, Position selectedPosition)
 {
@@ -172,19 +144,77 @@ bool ChessBoard::hasPawnOnLastRank(char color)
 
 bool ChessBoard::oppHasNoAvailableMove(char color)
 {
+    if(color == 'W')
+    {
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                if(boardState[i][j]->getColor() == 'B')
+                {
+                    if(isValidMove('B', make_pair(i,j), make_pair(i+1, j)) || isValidMove('B', make_pair(i,j), make_pair(i+1, j+1)) || isValidMove('B', make_pair(i,j), make_pair(i+1, j-1)))
+                        return false;
+                }
+            }
+        }
+    }
+    else
+    {
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < cols; j++)
+            {
+                if(boardState[i][j]->getColor() == 'W')
+                {
+                    if(isValidMove('W', make_pair(i,j), make_pair(i-1, j)) || isValidMove('W', make_pair(i,j), make_pair(i-1, j+1)) || isValidMove('W', make_pair(i,j), make_pair(i-1, j-1)))
+                        return false;
+                }
+            }
+        }
+    }
+
+    return true;
+}
+
+bool ChessBoard::isValidPosition(Position p)
+{
+    if(p.first < rows && p.first >= 0 && p.second < cols && p.second >= 0)
+        return true;
     return false;
 }
 
 bool ChessBoard::isValidMove(char color, Position piece, Position pos)
 {
-    if(boardState[piece.first][piece.second]->validateMove(color, piece, pos))
+    //If the current piece position and the desired move position are within the grid parameters
+    if(isValidPosition(piece) && isValidPosition(pos))
     {
-        if(boardState[piece.first][piece.second]->getName() == 'P')
-            if(spaceHasPiece(pos) && !boardState[piece.first][piece.second]->isAttack(color, piece, pos))
-                return false;
-        return true;
+        //If the piece that was selected is capable of moving to the desired position
+        if(boardState[piece.first][piece.second]->getColor() == color && boardState[piece.first][piece.second]->validateMove(color, piece, pos))
+        {
+            //If the space has a piece
+            if(spaceHasPiece(pos))
+            {
+                //If the desired move position's piece's color does not match the selected piece
+                if(boardState[piece.first][piece.second]->getColor() != boardState[pos.first][pos.second]->getColor())
+                {
+                    //Check for pawns
+                    if(boardState[piece.first][piece.second]->getName() == 'P')
+                        //If it is a pawn, check to see if the move is a valid attack
+                        if(!boardState[piece.first][piece.second]->isAttack(color, piece, pos))
+                            return false;
+                    return true;
+                }
+            }
+            else //If the space does not have a piece
+            {
+                //Check for pawns
+                if(boardState[piece.first][piece.second]->getName() == 'P')
+                    //Check if the move is a pawn attack
+                    if(boardState[piece.first][piece.second]->isAttack(color, piece, pos))
+                        return false;
+                return true;
+            }
+        }
     }
-    else {
-        return false;
-    }
+    return false;
 }

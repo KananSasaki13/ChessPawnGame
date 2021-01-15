@@ -4,18 +4,16 @@
 	<string>
 	"gamestate.hpp"
 
-1610585099 d:\c++\chess\pawn.hpp
-	<iostream>
-	<string>
+1610685598 d:\c++\chess\pawn.hpp
 	"piece.hpp"
 	<cmath>
 	<iostream>
 
-1610585120 d:\c++\chess\piece.hpp
+1610669205 d:\c++\chess\piece.hpp
 	<iostream>
 	<string>
 
-1610585155 d:\c++\chess\chessboard.hpp
+1610687318 d:\c++\chess\chessboard.hpp
 	<iostream>
 	<string>
 	<vector>
@@ -23,9 +21,6 @@
 	"pawn.hpp"
 	<typeinfo>
 
-1610582414 d:\c++\chess\gamestate.hpp
-	<iostream>
-	<string>
+1610686948 d:\c++\chess\gamestate.hpp
 	"chessboard.hpp"
-	<typeinfo>
 

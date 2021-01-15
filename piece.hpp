@@ -1,6 +1,16 @@
 #include <iostream>
 #include <string>
 
+/*
+    This class is the base class for all derived pieces and pointers to these objects will represent
+    empty spaces on the board. It carries several of the core variables for chess pieces
+    (color, name of the piece, etc.).
+
+    This is the class that will be used to construct our 2d vector board of pointers towards the pieces.
+    The reason why we must use a 2d vector of pointer pieces rather than a 2d vector of pieces is that
+    we need to avoid object splicing when attempting to set a space to a derived object (such as a pawn).
+*/
+
 using namespace std;
 
 class Piece{
@@ -10,21 +20,21 @@ public:
     typedef pair<int, int> Position;
 
     //Queries
-    virtual bool isAttack(char color, Position currentPos, Position newPos);
-    virtual bool validateMove(char color, Position currentPos, Position newPos);
     char getColor();
     char getName();
     bool getIsEmpty();
     bool getIsFirstMove();
     Position getPosition();
+    virtual bool isAttack(char color, Position currentPos, Position newPos);
+    virtual bool validateMove(char color, Position currentPos, Position newPos);
 
     //Commands
-    void makeMove(Position newPos);
     void setColor(char c);
-    void setPiece(Position p);
     void setName(char c);
     void setIsEmpty();
     void setIsFirstMove();
+    void makeMove(Position newPos);
+    void setPiece(Position p);
 
 private:
     //Variables
@@ -38,13 +48,11 @@ private:
 
 bool Piece::isAttack(char color, Position currentPos, Position newPos)
 {
-    cout << "in piece attack" << endl;
     return false;
 }
 
 bool Piece::validateMove(char color, Position currentPos, Position newPos)
 {
-    cout << "in piece validate move" << endl;
     return false;
 }
 
@@ -71,7 +79,6 @@ void Piece::setIsEmpty()
 
 void Piece::setIsFirstMove()
 {
-    cout << "SettingIsFirstMove to false" << endl;
     isFirstMove = false;
 }
 

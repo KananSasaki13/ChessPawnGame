@@ -1,20 +1,23 @@
-#include <iostream>
-#include <string>
 #include "piece.hpp"
 #include <cmath>
 #include <iostream>
+
+/*
+    This class is the base class for all derived pieces and pointers to these objects will represent
+    empty spaces on the board. It carries several of the core variables for chess pieces
+    (color, name of the piece, etc.).
+
+    This is the class that will be used to construct our 2d vector board of pointers towards the pieces.
+    The reason why we must use a 2d vector of pointer pieces rather than a 2d vector of pieces is that
+    we need to avoid object splicing when attempting to set a space to a derived object (such as a pawn).
+*/
 
 using namespace std;
 
 class Pawn: public Piece {
 
-private:
-    //Variables
-
-
 public:
-    //Destructor/Constructor
-    ~Pawn();
+    //Constructor
     Pawn(char myColor, Position p);
 
     //Queries
@@ -23,14 +26,8 @@ public:
 
 };
 
-Pawn::~Pawn()
-{
-    cout << "Deconstructing a pawn" << endl;
-}
-
 Pawn::Pawn (char myColor, Position p)
 {
-    cout << "Constructing a pawn" << endl;
     setColor(myColor);
     setName('P');
     setPiece(p);
@@ -60,8 +57,6 @@ bool Pawn::isAttack(char color, Position currentPos, Position newPos)
 
 bool Pawn::validateMove(char color, Position currentPos, Position newPos) {
     //White Pawn
-
-    cout << "IsFirstMove = " << getIsFirstMove() << endl;
     if(color == 'W')
     {
         //Attack and Move

@@ -1,17 +1,10 @@
-#include <iostream>
-#include <string>
 #include "chessboard.hpp"
-#include <typeinfo>
 
 using namespace std;
 
 class GameState {
 
 public:
-    //Destructor/Constructor
-    ~GameState();
-    GameState();
-
     //Typedefs
     typedef pair<int, int> Position;
 
@@ -35,18 +28,6 @@ private:
     Position promptForMove();
     int getRankFromLetter(char c);
 };
-
-//Destructor
-GameState::~GameState()
-{
-    cout << "Deconstructing the game..." << endl;
-}
-
-//Constructor
-GameState::GameState()
-{
-    cout << "Constructing the game..." << endl;
-}
 
 //Queries
 int GameState::getRankFromLetter(char c)
@@ -87,15 +68,12 @@ bool GameState::checkForVictory()
     //c) if it is your opponent's turn to move but all her pawns are blocked and do not have any moves, while you yourself can make at least one move.
 
     if(board.oppHasNoPawns(currentPlayer))
-    {
         return true;
-    } else if(board.hasPawnOnLastRank(currentPlayer))
-    {
+    else if(board.hasPawnOnLastRank(currentPlayer))
         return true;
-    } else if(board.oppHasNoAvailableMove(currentPlayer))
-    {
+    else if(board.oppHasNoAvailableMove(currentPlayer))
         return true;
-    }
+    return false;
 }
 
 bool GameState::checkForDraw()
@@ -104,31 +82,22 @@ bool GameState::checkForDraw()
     //If both sides' pawns are blocked so that neither side can make a move
 
     if(board.oppHasNoAvailableMove('W') && board.oppHasNoAvailableMove('B'))
-    {
         return true;
-    }
+    return false;
 }
 
 bool GameState::validateResponse(string response)
 {
     if(response.length() != 2)
-    {
         throw "Please provide correct number of characters";
-    }
     else
     {
         if(!isalpha(response[0]) || !isdigit(response[1]))
-        {
             throw "Please provide correct col-rank pair format (ie. f3 or h1)!";
-        }
         else
         {
-            int rownum = rows - (response[1] - '0');
-            cout << "rownum = " << rownum << ", getRankFromLetter(response[0]) = " << getRankFromLetter(response[0]) << endl;
-            if(getRankFromLetter(response[0]) < 0 || rownum < 0 || rownum > 7)
-            {
+            if(getRankFromLetter(response[0]) < 0 || rows - (response[1] - '0') < 0 || rows - (response[1] - '0') > 7)
                 throw "Please provide correct col-rank pair within the bounds of the board!";
-            }
         }
     }
     return true;
@@ -154,20 +123,16 @@ pair<int, int> GameState::promptForPiece()
     catch (const char* msg)
     {
         cout << msg << endl;
-        promptForPiece();
+        return promptForPiece();
     }
 
-    cout << "File = " << file << ", Row = " << row << endl;
     if(board.spaceHasPiece(make_pair(row, file)))
     {
         return make_pair(row, file);
-//        return board.getPieceAtPosition(make_pair(row, file));
     }
-    else
-    {
-        cout << "That square is empty. Please try again." << endl;
-        promptForPiece();
-    }
+
+    cout << "That square is empty. Please try again." << endl;
+    return promptForPiece();
 }
 
 pair<int, int> GameState::promptForMove()
@@ -191,10 +156,9 @@ pair<int, int> GameState::promptForMove()
     catch (const char* msg)
     {
         cout << msg << endl;
-        promptForPiece();
+        return promptForMove();
     }
 
-    cout << "File = " << file << ", Row = " << row << endl;
     return make_pair(row, file);
 }
 
@@ -214,6 +178,7 @@ void GameState::switchTurn()
 void GameState::takeTurn()
 {
     Position selectedPiece = promptForPiece();
+    cout << endl;
     Position selectedPosition = promptForMove();
     while(!board.isValidMove(currentPlayer, selectedPiece, selectedPosition))
     {
@@ -226,11 +191,19 @@ void GameState::takeTurn()
 
 void GameState::runGame()
 {
+    cout << "Welcome to chess pawn game! Be the first to reach the last rank or capture all of your opponent's pawns." << endl;
+
     while(true)
     {
         cout << board << endl;
-        takeTurn();
+        printf("It's %c's turn.\n", currentPlayer);
+        cout << endl;
 
+        if(checkForDraw())
+        {
+            cout << "The game is a draw!" << endl;
+            break;
+        }
         if(checkForVictory())
         {
             if(currentPlayer == 'W')
@@ -241,12 +214,8 @@ void GameState::runGame()
             }
             break;
         }
-        if(checkForDraw())
-        {
-            cout << "The game is a draw!" << endl;
-            break;
-        }
 
+        takeTurn();
         switchTurn();
     }
 }
