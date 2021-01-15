@@ -1,6 +1,8 @@
 # ChessPawnGame
 C++ project to play chess pawn game.
 
+RUN THE .BAT FILE INSTEAD OF THE .EXE FILE TO ADD PAUSE AT THE END OF GAME
+
 This project is meant to simulate a chess pawn game (see details at this link: http://www.chesscorner.com/tutorial/basic/pawngame/pawngame.htm).
 I decided that this project would be a good one because it demonstrates my ability to both build a simple completed project while also showing that I am capable of coding/planning
 for a larger scale project.
@@ -21,6 +23,7 @@ the piece.hpp class and contains a pawn's logic.
 5. gamestate.hpp -> this class contains the logic for actually running the game through the console. It has methods for prompting for pieces, running the game and displaying the ui.
 
 //Description
+
 Welcome to the Chess Pawn Game!
 
 Remember pawns move one square forward (never backward) except on their first move when they have a choice of moving either one or two squares. 
