@@ -48,6 +48,16 @@ ChessBoard::ChessBoard ()
                 temp.emplace_back(new Pawn('W', make_pair(row, col)));
             else
                 temp.emplace_back(new Piece());
+//            if(row == 3 && col % 2 == 0)
+//                temp.emplace_back(new Pawn('B', make_pair(row, col)));
+//            else if(row == 4 && col % 2 == 0)
+//                temp.emplace_back(new Pawn('W', make_pair(row, col)));
+//            else if(row == 4 && col % 2 == 1 && col != 7)
+//                temp.emplace_back(new Pawn('B', make_pair(row, col)));
+//            else if(row == 5 && col % 2 == 1)
+//                temp.emplace_back(new Pawn('W', make_pair(row, col)));
+//            else
+//                temp.emplace_back(new Piece());
         }
         boardState.emplace_back(move(temp));
     }
@@ -136,6 +146,14 @@ bool ChessBoard::hasPawnOnLastRank(char color)
         for(int i = 0; i < cols; i++)
         {
             if(boardState[0][i]->getColor() == 'W')
+                return true;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < cols; i++)
+        {
+            if(boardState[7][i]->getColor() == 'B')
                 return true;
         }
     }

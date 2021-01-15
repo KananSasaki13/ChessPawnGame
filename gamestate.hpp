@@ -106,7 +106,7 @@ bool GameState::validateResponse(string response)
 pair<int, int> GameState::promptForPiece()
 {
     string square;
-    cout << "Select a piece on the board by typing in the square it is in (ie. f3 or h1)" << endl;
+    cout << "Select a piece on the board by typing in the square it is in (i.e. f3 or h1)" << endl;
     cin >> square;
 
     int row, file;
@@ -138,7 +138,7 @@ pair<int, int> GameState::promptForPiece()
 pair<int, int> GameState::promptForMove()
 {
     string square;
-    cout << "Select a space to move your piece on the board by typing in the square it is in (ie. f3 or h1)" << endl;
+    cout << "Select a space to move your piece on the board by typing in the square it is in (i.e. f3 or h1)" << endl;
     cin >> square;
 
     int row, file;
@@ -191,7 +191,7 @@ void GameState::takeTurn()
 
 void GameState::runGame()
 {
-    cout << "Welcome to chess pawn game! Be the first to reach the last rank or capture all of your opponent's pawns." << endl;
+    cout << "Welcome to the Chess Pawn Game! Be the first to reach the last rank, or capture all of your opponent's pawns." << endl;
 
     while(true)
     {
@@ -199,13 +199,17 @@ void GameState::runGame()
         printf("It's %c's turn.\n", currentPlayer);
         cout << endl;
 
+        takeTurn();
+
         if(checkForDraw())
         {
+            cout << board << endl;
             cout << "The game is a draw!" << endl;
             break;
         }
         if(checkForVictory())
         {
+            cout << board << endl;
             if(currentPlayer == 'W')
             {
                 cout << "White is the winner!" << endl;
@@ -215,7 +219,6 @@ void GameState::runGame()
             break;
         }
 
-        takeTurn();
         switchTurn();
     }
 }
